@@ -1,4 +1,5 @@
 import { RegisterReq, RegisterRes } from "../dtos/auth.dto.js";
+import CustomError from "../errors/CustomError.js";
 import { IUserRepository } from "../repositories/interfaces/user.js";
 
 export class AuthService {
@@ -9,6 +10,15 @@ export class AuthService {
   }
 
   async registerUser(data: RegisterReq): Promise<RegisterRes> {
+    const existingUser = await this.userRepository.findByEmail(data.email);
+
+    if (existingUser) {
+      throw new CustomError({
+        message: "Email already in use",
+        statusCode: 409,
+        code: "ERR_VALID",
+      });
+    }
     const newUser = await this.userRepository.create({
       username: data.username,
       email: data.email,
