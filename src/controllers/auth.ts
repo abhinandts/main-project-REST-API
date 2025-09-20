@@ -1,20 +1,16 @@
-import { NextFunction, Request, Response } from "express";
-import { AuthService } from "../services/auth.js";
-import { RegisterRes } from "../dtos/auth.dto.js";
+import { Request, Response, NextFunction } from "express";
+import { IAuthService } from "../services/interfaces/auth.js";
 
-const authService = new AuthService();
+export class AuthController {
+  constructor(private authService: IAuthService) {}
 
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result: RegisterRes = await authService.registerUser(
-      req.validatedBody
-    );
-    res.status(201).json(result);
-  } catch (err) {
-    next(err);
+  async register(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.authService.registerUser(req.validatedBody);
+
+      res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
   }
-};
+}

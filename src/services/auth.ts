@@ -1,11 +1,15 @@
 import { RegisterReq, RegisterRes } from "../dtos/auth.dto.js";
-import { UserRepository } from "../repositories/user.js";
-
-const userRepository = new UserRepository();
+import { IUserRepository } from "../repositories/interfaces/user.js";
 
 export class AuthService {
+  private userRepository: IUserRepository;
+
+  constructor(userRepository: IUserRepository) {
+    this.userRepository = userRepository;
+  }
+
   async registerUser(data: RegisterReq): Promise<RegisterRes> {
-    const newUser = await userRepository.create({
+    const newUser = await this.userRepository.create({
       username: data.username,
       email: data.email,
       role: data.role,

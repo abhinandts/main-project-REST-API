@@ -9,9 +9,6 @@ export function validateRegisterDTO(body: unknown): RegisterReq {
       code: "ERR_VALID",
     });
   }
-
-  // const { username, email, password, role } = body as Record<string, unknown>;
-
   const data = body as { [key: string]: unknown };
 
   const username = data.username;

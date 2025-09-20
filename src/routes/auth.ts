@@ -1,9 +1,19 @@
 import express, { Router } from "express";
 import { validateRegisterMiddleware } from "../middleware/validateRegister.js";
-import { register } from "../controllers/auth.js";
+import { UserRepository } from "../repositories/user.js";
+import { AuthService } from "../services/auth.js";
+import { AuthController } from "../controllers/auth.js";
 
-const auth: Router = express.Router();
+const userRepository = new UserRepository();
+const authService = new AuthService(userRepository);
+const authController = new AuthController(authService);
 
-auth.post("/", validateRegisterMiddleware, register);
+const authRouter: Router = express.Router();
 
-export default auth;
+authRouter.post(
+  "/",
+  validateRegisterMiddleware,
+  authController.register.bind(authController)
+);
+
+export default authRouter;
